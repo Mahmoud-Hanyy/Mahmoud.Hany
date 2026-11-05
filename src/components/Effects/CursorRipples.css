@@ -1,0 +1,15 @@
+.cursor-ripples {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* Ripples are a mouse-driven flourish — hide on touch devices where there's
+   no persistent cursor to react to. */
+@media (hover: none) and (pointer: coarse) {
+  .cursor-ripples {
+    display: none;
+  }
+}

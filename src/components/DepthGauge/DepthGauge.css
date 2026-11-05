@@ -1,0 +1,86 @@
+.depth-gauge {
+  position: fixed;
+  right: var(--sp-3);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  pointer-events: none;
+}
+
+.depth-gauge__track {
+  position: relative;
+  width: 2px;
+  height: 34vh;
+  background: linear-gradient(
+    to bottom,
+    rgba(216, 236, 250, 0.15),
+    rgba(216, 236, 250, 0.05)
+  );
+  border-radius: 2px;
+}
+
+.depth-gauge__fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(
+    to bottom,
+    var(--bioluminescence),
+    var(--bioluminescence-dim)
+  );
+  border-radius: 2px;
+  transition: height var(--dur-fast) var(--ease-drift);
+}
+
+.depth-gauge__marker {
+  position: absolute;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bioluminescence);
+  box-shadow: 0 0 12px 3px rgba(63, 232, 211, 0.65);
+  transform: translate(-50%, -50%);
+  transition: top var(--dur-fast) var(--ease-drift);
+}
+
+.depth-gauge__readout {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-family: var(--font-mono);
+  text-align: right;
+}
+
+.depth-gauge__meters {
+  font-size: var(--fs-sm);
+  color: var(--foam);
+  letter-spacing: 0.02em;
+}
+
+.depth-gauge__zone {
+  font-size: var(--fs-2xs);
+  color: var(--foam-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-top: 2px;
+}
+
+@media (max-width: 900px) {
+  .depth-gauge__readout {
+    display: none; /* the numeric readout collides with section copy below desktop widths; bar alone still communicates progress */
+  }
+}
+
+@media (max-width: 720px) {
+  .depth-gauge {
+    right: var(--sp-2);
+  }
+  .depth-gauge__track {
+    height: 24vh;
+  }
+}

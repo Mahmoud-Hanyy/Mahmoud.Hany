@@ -1,0 +1,56 @@
+.shark {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  container-type: size;
+}
+
+.shark__route {
+  position: absolute;
+  top: 73%;
+  left: 0;
+  width: clamp(240px, 32vw, 440px);
+  opacity: 0.4;
+  animation: shark-patrol 70s ease-in-out -18s infinite;
+}
+
+.shark__direction {
+  animation: shark-turn 70s steps(1, end) -18s infinite;
+}
+
+.shark__body { display: block; width: 100%; animation: shark-drift 6s ease-in-out infinite alternate; }
+.shark__tail { transform-origin: 86px 109px; animation: shark-tail 2.4s ease-in-out infinite alternate; }
+
+.shark:not(.is-active) :is(.shark__route, .shark__direction, .shark__body, .shark__tail) { animation-play-state: paused; }
+
+@keyframes shark-patrol {
+  0%, 100% { transform: translate3d(calc(-100% - 30px), 0, 0); }
+  25%, 75% { transform: translate3d(calc(50cqw - 50%), -16px, 0); }
+  50% { transform: translate3d(calc(100cqw + 30px), 0, 0); }
+}
+
+@keyframes shark-turn {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(-1); }
+}
+
+@keyframes shark-drift {
+  from { transform: translateY(-4px) rotate(-1deg); }
+  to { transform: translateY(4px) rotate(1deg); }
+}
+
+@keyframes shark-tail {
+  from { transform: skewY(-7deg) scaleX(0.94); }
+  to { transform: skewY(7deg) scaleX(1.03); }
+}
+
+@media (max-width: 760px) {
+  .shark__route { top: 77%; width: 240px; opacity: 0.3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shark__route, .shark__direction, .shark__body, .shark__tail { animation: none; }
+  .shark__route { left: auto; right: 3%; transform: none; }
+}

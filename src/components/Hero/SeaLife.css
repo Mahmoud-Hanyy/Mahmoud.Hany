@@ -1,0 +1,131 @@
+.sea-life {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  color: #73b5c8;
+  container-type: size;
+}
+
+.sea-life__route {
+  position: absolute;
+  top: var(--school-top);
+  left: 0;
+  width: 190px;
+  height: 110px;
+  opacity: 0.32;
+  animation: sea-school-route var(--swim-duration) ease-in-out var(--swim-delay) infinite;
+}
+
+.sea-life__school {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  animation: sea-school-turn var(--swim-duration) steps(1, end) var(--swim-delay) infinite;
+}
+
+.sea-life__fish {
+  position: absolute;
+  width: var(--fish-size);
+  fill: currentColor;
+  overflow: visible;
+  animation: sea-fish-swim 2.4s ease-in-out var(--fish-delay) infinite alternate;
+}
+
+.sea-life__fish-highlight {
+  fill: none;
+  stroke: #b4e0e9;
+  stroke-width: 0.8;
+  opacity: 0.55;
+}
+
+.sea-life__eye { fill: #062238; }
+
+.sea-life__ray {
+  position: absolute;
+  left: 57%;
+  top: 72%;
+  width: clamp(90px, 12vw, 175px);
+  opacity: 0.25;
+  transform: rotate(-18deg);
+  animation: sea-ray-glide 22s ease-in-out infinite alternate;
+}
+
+.sea-life__ray svg { display: block; width: 100%; overflow: visible; fill: currentColor; }
+.sea-life__ray-wings { transform-origin: 110px 75px; animation: sea-ray-wings 4.5s ease-in-out infinite alternate; }
+.sea-life__ray-tail { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.sea-life__ray-highlight { fill: none; stroke: #b4e0e9; stroke-width: 1; opacity: 0.6; }
+
+.sea-life:not(.is-active) :is(.sea-life__route, .sea-life__school, .sea-life__fish, .sea-life__ray, .sea-life__ray-wings) { animation-play-state: paused; }
+
+/* Travel across the section in both directions. Turn just beyond the edge
+   so the fish face their movement rather than sliding backwards. */
+@keyframes sea-school-route {
+  0%, 100% { transform: translate3d(calc(-100% - 40px), 0, 0); }
+  25%, 75% { transform: translate3d(calc(50cqw - 50%), var(--swim-bob), 0); }
+  50% { transform: translate3d(calc(100cqw + 40px), 0, 0); }
+}
+
+@keyframes sea-school-turn {
+  0% { transform: scaleX(-1); }
+  50% { transform: scaleX(1); }
+  100% { transform: scaleX(-1); }
+}
+
+@keyframes sea-fish-swim {
+  from { transform: translateY(-3px) scaleX(0.94); }
+  to { transform: translateY(3px) scaleX(1.02); }
+}
+
+@keyframes sea-ray-glide {
+  from { transform: translate3d(0, 0, 0) rotate(-18deg); }
+  to { transform: translate3d(10vw, -25px, 0) rotate(-8deg); }
+}
+
+@keyframes sea-ray-wings {
+  from { transform: scaleY(0.72); }
+  to { transform: scaleY(1.08); }
+}
+
+@media (max-width: 760px) {
+  .sea-life__route { width: 150px; opacity: 0.25; }
+  .sea-life__fish { width: calc(var(--fish-size) * 0.75); }
+  .sea-life__ray { top: 73%; left: 12%; width: 90px; opacity: 0.3; }
+}
+
+/* Keep the animals visible in the water while softening them behind copy. */
+.sea-life--ambient {
+  z-index: 1;
+  color: #8bc8d7;
+  mask-image: linear-gradient(90deg, #000, rgba(0, 0, 0, 0.65) 28%, rgba(0, 0, 0, 0.65) 65%, #000);
+}
+
+.sea-life--ambient .sea-life__route {
+  opacity: 0.48;
+  animation-name: sea-ambient-patrol;
+}
+
+.sea-life--ambient .sea-life__fish { width: var(--fish-size); }
+
+/* The smaller ambient groups stay inside the section throughout the cycle. */
+@keyframes sea-ambient-patrol {
+  0%, 100% { transform: translate3d(16px, 0, 0); }
+  25%, 75% { transform: translate3d(calc(50cqw - 50%), var(--swim-bob), 0); }
+  50% { transform: translate3d(calc(100cqw - 100% - 16px), 0, 0); }
+}
+
+@media (max-width: 760px) {
+  .sea-life--ambient .sea-life__route { opacity: 0.42; }
+  .sea-life--ambient .sea-life__fish { width: calc(var(--fish-size) * 0.85); }
+  .sea-life--dive { mask-image: linear-gradient(to bottom, transparent 40%, #000 52%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sea-life--ambient .sea-life__route,
+  .sea-life__route,
+  .sea-life__school,
+  .sea-life__fish,
+  .sea-life__ray,
+  .sea-life__ray-wings { animation: none; }
+  .sea-life__route { left: var(--rest-left); transform: none; }
+}

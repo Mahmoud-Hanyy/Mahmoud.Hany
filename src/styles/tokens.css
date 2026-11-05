@@ -1,0 +1,93 @@
+/* =========================================================
+   DESIGN TOKENS — "The Descent"
+   A portfolio structured as a dive: every section is a depth
+   zone, darkening and quieting as the visitor scrolls down,
+   the way real sunlight fades underwater.
+   ========================================================= */
+
+:root {
+  /* ---- Depth-zone palette (named after real ocean light zones) ---- */
+  --z-surface: #0F3A52;      /* Sunlight Zone   – hero, bright-ish blue */
+  --z-twilight: #0A2E4D;     /* Twilight Zone   – about/skills */
+  --z-midnight: #061B33;     /* Midnight Zone   – projects */
+  --z-abyss: #010710;        /* Abyssal Zone    – contact / footer */
+
+  /* ---- Accents ---- */
+  --bioluminescence: #3FE8D3;  /* signature glow — jellyfish / plankton cyan */
+  --bioluminescence-dim: #1F8C82;
+  --foam: #D8ECFA;            /* near-white text on dark backgrounds */
+  --foam-dim: rgba(216, 236, 250, 0.62);
+  --coral: #FF6B4A;           /* rare warm accent — used sparingly, like a lure */
+
+  /* ---- Type ---- */
+  --font-display: "Fraunces", "Iowan Old Style", serif;
+  --font-body: "Sora", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", monospace;
+
+  --fs-2xs: 0.72rem;
+  --fs-xs: 0.85rem;
+  --fs-sm: 1rem;
+  --fs-md: 1.25rem;
+  --fs-lg: 1.75rem;
+  --fs-xl: clamp(2.25rem, 4vw, 3.5rem);
+  --fs-2xl: clamp(3rem, 7vw, 6.5rem);
+
+  /* ---- Spacing scale ---- */
+  --sp-1: 0.4rem;
+  --sp-2: 0.8rem;
+  --sp-3: 1.6rem;
+  --sp-4: 2.4rem;
+  --sp-5: 4rem;
+  --sp-6: 6.4rem;
+  --sp-7: 10rem;
+
+  /* ---- Motion ---- */
+  --ease-dive: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-drift: cubic-bezier(0.45, 0, 0.55, 1);
+  --dur-fast: 240ms;
+  --dur-med: 560ms;
+  --dur-slow: 1200ms;
+
+  /* ---- Misc ---- */
+  --radius-porthole: 50%;
+  --radius-panel: 18px;
+  --border-glow: 1px solid rgba(63, 232, 211, 0.28);
+  --shadow-glow: 0 0 40px rgba(63, 232, 211, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--z-abyss);
+  color: var(--foam);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--bioluminescence);
+  color: var(--z-abyss);
+}
+
+/* Visible focus ring — accessibility floor, styled to fit the theme */
+:focus-visible {
+  outline: 2px solid var(--bioluminescence);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

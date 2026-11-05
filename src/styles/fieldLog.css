@@ -1,0 +1,117 @@
+/* Shared field-log framing for the final two depth zones. */
+.field-section {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: clamp(5rem, 9vw, 7rem) var(--sp-5);
+}
+
+.field-section::before {
+  position: absolute;
+  inset: 0 auto 0 max(2rem, calc((100% - 1200px) / 2));
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(94, 201, 240, 0.18) 14%, rgba(94, 201, 240, 0.07) 88%, transparent);
+  content: "";
+  pointer-events: none;
+}
+
+.field-section__inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.field-section__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  margin-bottom: var(--sp-4);
+}
+
+.field-section__intro { max-width: 760px; }
+
+.field-section__marker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: var(--sp-3);
+  color: var(--bioluminescence);
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.field-section__marker::before {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--bioluminescence);
+  box-shadow: 0 0 12px rgba(63, 232, 211, 0.7);
+  content: "";
+}
+
+.field-section__heading {
+  margin: 0;
+  color: #e8f5fb;
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 6vw, 5.2rem);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+.field-section__heading span {
+  color: var(--bioluminescence);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.field-section__body {
+  max-width: 58ch;
+  margin: var(--sp-3) 0 0;
+  color: var(--foam-dim);
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+}
+
+.field-section__note {
+  display: grid;
+  gap: 0.65rem;
+  flex: 0 0 auto;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(216, 236, 250, 0.12);
+  background: rgba(1, 7, 16, 0.2);
+  color: var(--foam-dim);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.field-section__note strong {
+  color: #e8f5fb;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.field-section__note-caption { color: var(--bioluminescence); }
+
+@media (max-width: 760px) {
+  .field-section { padding: 5rem var(--sp-3); }
+  .field-section::before { left: 1rem; }
+  .field-section__header { display: block; }
+  .field-section__note { display: inline-grid; margin-top: var(--sp-3); }
+}
+
+@media (max-width: 520px) {
+  .field-section__heading { font-size: clamp(2.7rem, 12vw, 4rem); }
+  .field-section__body { font-size: 0.9rem; }
+}

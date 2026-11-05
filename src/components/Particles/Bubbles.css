@@ -1,0 +1,104 @@
+.bubbles {
+  --bubble-rise-distance: -115vh;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+  container-type: size;
+}
+
+.bubbles__rise {
+  position: absolute;
+  left: var(--bubble-left);
+  bottom: -45px;
+  width: var(--bubble-size);
+  height: var(--bubble-size);
+  opacity: 0;
+  animation: bubble-rise var(--bubble-duration) linear var(--bubble-delay) infinite;
+}
+
+.bubbles__item {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(195, 235, 248, 0.38);
+  border-radius: 48% 52% 46% 54%;
+  background:
+    radial-gradient(ellipse at 27% 20%, rgba(244, 253, 255, 0.75) 0%, rgba(225, 248, 255, 0.2) 8%, transparent 23%),
+    radial-gradient(ellipse at 75% 83%, rgba(170, 225, 246, 0.32), transparent 24%),
+    radial-gradient(ellipse at center, transparent 48%, rgba(142, 208, 232, 0.12) 76%, rgba(225, 247, 255, 0.35));
+  box-shadow:
+    inset 1px 1px 2px rgba(230, 249, 255, 0.35),
+    inset -1px -2px 3px rgba(7, 31, 56, 0.55),
+    0 1px 3px rgba(1, 7, 16, 0.16);
+  animation: bubble-wobble var(--bubble-wobble) ease-in-out var(--bubble-delay) infinite alternate;
+}
+
+.bubbles__item::before {
+  position: absolute;
+  top: 12%;
+  left: 16%;
+  width: 36%;
+  height: 24%;
+  border-top: 1px solid rgba(245, 253, 255, 0.8);
+  border-radius: 50%;
+  transform: rotate(-35deg);
+  content: "";
+}
+
+.bubbles__rise--near { --bubble-opacity: 0.6; filter: blur(0.3px); }
+.bubbles__rise--mid { --bubble-opacity: 0.4; }
+.bubbles__rise--far { --bubble-opacity: 0.2; filter: blur(0.8px); }
+
+/* Exhaust starts beside the diver and follows the descent. Distant air
+   stays spread through the water to give the scene a sense of depth. */
+.bubbles--dive {
+  --bubble-source-x: calc(74% - var(--dive-progress, 0) * 3%);
+  --bubble-source-y: calc(43% + var(--dive-progress, 0) * 18%);
+}
+
+.bubbles--dive .bubbles__rise:not(.bubbles__rise--far) {
+  left: calc(var(--bubble-source-x) + var(--bubble-spread));
+  top: var(--bubble-source-y);
+  bottom: auto;
+}
+
+.bubbles--dive .bubbles__rise--near { --bubble-opacity: 0.72; }
+
+.bubbles:not(.is-active) .bubbles__rise,
+.bubbles:not(.is-active) .bubbles__item { animation-play-state: paused; }
+
+@supports (height: 1cqh) {
+  .bubbles { --bubble-rise-distance: -110cqh; }
+}
+
+@keyframes bubble-rise {
+  0% { transform: translate3d(0, 0, 0) scale(0.65); opacity: 0; }
+  7% { opacity: var(--bubble-opacity); }
+  35% { transform: translate3d(calc(var(--bubble-drift) * 0.25), calc(var(--bubble-rise-distance) * 0.25), 0) scale(0.85); }
+  65% { opacity: var(--bubble-opacity); transform: translate3d(calc(var(--bubble-drift) * 0.6), calc(var(--bubble-rise-distance) * 0.56), 0) scale(1.05); }
+  100% { transform: translate3d(var(--bubble-drift), var(--bubble-rise-distance), 0) scale(1.3); opacity: 0; }
+}
+
+@keyframes bubble-wobble {
+  0% { transform: translateX(calc(var(--bubble-sway) * -0.5)) rotate(-9deg) scale(1.06, 0.94); border-radius: 48% 52% 46% 54%; }
+  50% { transform: translateX(0) rotate(3deg) scale(0.96, 1.04); }
+  100% { transform: translateX(var(--bubble-sway)) rotate(9deg) scale(1.08, 0.92); border-radius: 53% 47% 54% 46%; }
+}
+
+@media (max-width: 760px) {
+  .bubbles--dive {
+    --bubble-source-x: 58%;
+    --bubble-source-y: calc(61% + var(--dive-progress, 0) * 6%);
+    /* Keep air behind the diver; the upper half is reserved for the story. */
+    mask-image: linear-gradient(to bottom, transparent 38%, #000 52%);
+  }
+  .bubbles__rise--near { width: calc(var(--bubble-size) * 0.8); height: calc(var(--bubble-size) * 0.8); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubbles { display: none; }
+  .bubbles__rise, .bubbles__item { animation: none; }
+}
