@@ -1,11 +1,15 @@
 import { motion } from "framer-motion";
-import OceanScene from "./OceanScene";
+import { lazy, Suspense } from "react";
+import useLiteExperience from "../../hooks/useLiteExperience";
+
 import SeaLife from "./SeaLife";
 import Bubbles from "../Particles/Bubbles";
 import Portrait from "./Portrait";
 import AmbientSound from "../Audio/AmbientSound";
 import RotatingPhrase from "./RotatingPhrase";
 import "./Hero.css";
+
+const OceanScene = lazy(() => import("./OceanScene"));
 
 const JOURNEY_STOPS = [
   { number: "01", label: "Surface", href: "#surface", current: true },
@@ -14,20 +18,24 @@ const JOURNEY_STOPS = [
 ];
 
 export default function Hero({ meters, depthZone }) {
+  const lite = useLiteExperience();
+
   return (
-    <section className="hero" id="surface">
+    <section className={`hero${lite ? " hero--lite" : ""}`} id="surface">
       <div className="hero__scene" aria-hidden="true">
-        <OceanScene />
+        {!lite && <Suspense fallback={null}><OceanScene /></Suspense>}
       </div>
 
-      <Bubbles count={10} />
-      <SeaLife variant="ambient" school={0} />
+      {!lite && <>
+        <Bubbles count={10} />
+        <SeaLife variant="ambient" school={0} />
+      </>}
 
       <div className="hero__content">
         <div className="hero__row">
           <motion.div
             className="hero__copy"
-            initial={{ opacity: 0, y: 18 }}
+            initial={lite ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
@@ -46,7 +54,7 @@ export default function Hero({ meters, depthZone }) {
 
             <p className="hero__subtitle">
               I build interfaces the way I <span className="hero__dive-word">dive</span>{" "}
-              <RotatingPhrase />
+              <RotatingPhrase staticText={lite} />
             </p>
 
             <div className="hero__actions">
@@ -77,7 +85,7 @@ export default function Hero({ meters, depthZone }) {
 
           <motion.div
             className="hero__figure"
-            initial={{ opacity: 0, y: 24 }}
+            initial={lite ? false : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           >

@@ -1,12 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { Canvas } from "@react-three/fiber";
-import { useReducedMotion } from "framer-motion";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import useLiteExperience from "../../hooks/useLiteExperience";
 import useSectionScrollProgress from "../../hooks/useSectionScrollProgress";
-import { Plankton } from "./OceanScene";
-import DiverPlane from "./DiverPlane";
 import SeaLife from "./SeaLife";
 import Bubbles from "../Particles/Bubbles";
 import "./DiverDescent.css";
+
+const DescentScene = lazy(() => import("./DescentScene"));
 
 const CHAPTERS = [
   { label: "Leave the surface", title: "There's more", emphasis: "below the surface.", body: "The best part of the ocean is what you can't see from above. The same goes for the work." },
@@ -32,10 +31,10 @@ function Jellyfish({ className }) {
 }
 
 export default function DiverDescent({ meters }) {
-  const { ref, progress } = useSectionScrollProgress();
+  const lite = useLiteExperience();
+  const { ref, progress } = useSectionScrollProgress(!lite);
   const progressRef = useRef(0);
   const [inView, setInView] = useState(false);
-  const reducedMotion = useReducedMotion();
   const chapterIndex = Math.min(Math.floor(progress * CHAPTERS.length), CHAPTERS.length - 1);
   const chapter = CHAPTERS[chapterIndex];
 
@@ -45,14 +44,42 @@ export default function DiverDescent({ meters }) {
 
   useEffect(() => {
     const node = ref.current;
-    if (!node || typeof IntersectionObserver === "undefined") return;
+    if (lite || !node || typeof IntersectionObserver === "undefined") return;
     const observer = new IntersectionObserver(
       ([entry]) => setInView(entry.isIntersecting),
       { rootMargin: "300px" }
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [ref]);
+  }, [ref, lite]);
+
+  if (lite) {
+    return (
+      <section className="descent-log" id="descent" aria-labelledby="descent-heading">
+        <div className="descent-log__header">
+          <span>02 / The descent</span>
+          <span>Twilight zone / 200–1,000 m</span>
+        </div>
+        <div className="descent-log__layout">
+          <figure className="descent-log__illustration">
+            <div className="descent-log__orbit" aria-hidden="true" />
+            <img src="/images/diving.png" alt="" loading="lazy" decoding="async" width="1024" height="1536" />
+            <figcaption>Below the surface / A different perspective</figcaption>
+          </figure>
+          <ol className="descent-log__chapters">
+            {CHAPTERS.map((item, index) => (
+              <li key={item.label}>
+                <p className="descent-log__label">{String(index + 1).padStart(2, "0")} / {item.label}</p>
+                <h2 id={index === 0 ? "descent-heading" : undefined}>{item.title} <em>{item.emphasis}</em></h2>
+                <p className="descent-log__body">{item.body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <a className="descent-log__link" href="#about">Explore the field notes <span aria-hidden="true">↘</span></a>
+      </section>
+    );
+  }
 
   return (
     <section className={`diver-descent${inView ? " is-active" : ""}`} id="descent" ref={ref} aria-labelledby="descent-heading">
@@ -69,23 +96,9 @@ export default function DiverDescent({ meters }) {
         </div>
 
         <div className="diver-descent__visual" aria-hidden="true">
-          {reducedMotion ? (
-            <img className="diver-descent__still" src="/images/diving.png" alt="" />
-          ) : (
-            <Canvas
-              className="diver-descent__canvas"
-              camera={{ position: [0, 0, 7], fov: 45 }}
-              dpr={[1, 1.5]}
-              gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
-              frameloop={inView ? "always" : "never"}
-            >
-              <fog attach="fog" args={["#0a2e4d", 7, 18]} />
-              <ambientLight intensity={1.1} />
-              <directionalLight position={[3, 4, 5]} intensity={0.8} />
-              <Plankton count={140} />
-              <DiverPlane progressRef={progressRef} />
-            </Canvas>
-          )}
+          <Suspense fallback={<img className="diver-descent__still" src="/images/diving.png" alt="" />}>
+            <DescentScene inView={inView} progressRef={progressRef} />
+          </Suspense>
         </div>
 
         <div className="diver-descent__topline">

@@ -8,16 +8,18 @@ import Projects from "./components/Projects/Projects";
 import Contact from "./components/Contact/Contact";
 import DepthGauge from "./components/DepthGauge/DepthGauge";
 import CursorRipples from "./components/Effects/CursorRipples";
+import useLiteExperience from "./hooks/useLiteExperience";
 import useScrollDepth from "./hooks/useScrollDepth";
 import { getDepthZone } from "./data/depthZones";
 
 export default function App() {
+  const lite = useLiteExperience();
   const { progress, meters } = useScrollDepth(4000);
   const depthZone = getDepthZone(meters).label;
 
   return (
     <>
-      <CursorRipples />
+      {!lite && <CursorRipples />}
       <Navbar />
       <DepthGauge progress={progress} meters={meters} />
       <main>

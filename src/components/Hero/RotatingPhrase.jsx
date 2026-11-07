@@ -12,20 +12,22 @@ const PHRASES = [
  * sentence. Pauses entirely for prefers-reduced-motion — shows the first
  * phrase only.
  */
-export default function RotatingPhrase() {
+export default function RotatingPhrase({ staticText = false }) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
-    if (prefersReducedMotion) return;
+    if (staticText || prefersReducedMotion) return;
 
     const id = setInterval(() => {
       setIndex((i) => (i + 1) % PHRASES.length);
     }, 3200);
     return () => clearInterval(id);
-  }, []);
+  }, [staticText]);
+
+  if (staticText) return <span className="hero__rotating-phrase">{PHRASES[0]}</span>;
 
   return (
     <AnimatePresence mode="wait">

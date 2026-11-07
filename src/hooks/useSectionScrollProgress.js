@@ -10,11 +10,13 @@ import { useEffect, useRef, useState } from "react";
  * pinned to the viewport; progress reaches 1 right as the wrapper's bottom
  * edge reaches the bottom of the viewport.
  */
-export default function useSectionScrollProgress() {
+export default function useSectionScrollProgress(enabled = true) {
   const ref = useRef(null);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    if (!enabled) return;
+    let rafId;
     let ticking = false;
 
     const measure = () => {
@@ -33,7 +35,7 @@ export default function useSectionScrollProgress() {
 
     const onScroll = () => {
       if (!ticking) {
-        window.requestAnimationFrame(measure);
+        rafId = window.requestAnimationFrame(measure);
         ticking = true;
       }
     };
@@ -42,10 +44,11 @@ export default function useSectionScrollProgress() {
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
+      window.cancelAnimationFrame(rafId);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, []);
+  }, [enabled]);
 
   return { ref, progress };
 }

@@ -1,6 +1,7 @@
 import { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import useInView from "../../hooks/useInView";
+import useWebGLFallback from "../../hooks/useWebGLFallback";
 
 /** A field of soft, glowing plankton/bubble points drifting upward. */
 export function Plankton({ count = 400 }) {
@@ -80,11 +81,16 @@ function LightRays() {
 
 export default function OceanScene() {
   const [containerRef, inView] = useInView("300px");
+  const { unavailable, onCreated } = useWebGLFallback();
+
+  if (unavailable) return null;
 
   return (
     <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
       <Canvas
         className="ocean-scene__canvas"
+        onCreated={onCreated}
+        fallback={null}
         camera={{ position: [0, 0, 8], fov: 55 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}

@@ -34,6 +34,7 @@
 
 .diver-descent__rays {
   position: absolute;
+  z-index: 1;
   inset: -30% -10% 0 20%;
   transform: rotate(22deg);
   transform-origin: top center;
@@ -57,6 +58,7 @@
 
 .diver-descent__rings {
   position: absolute;
+  z-index: 1;
   left: 68%;
   top: 47%;
   width: min(50vw, 700px);
@@ -82,7 +84,8 @@
   pointer-events: none;
 }
 
-.diver-descent__visual { z-index: 1; }
+.diver-descent__visual { z-index: 0; background-color: #071f38; }
+.diver-descent__life { z-index: 1; }
 .diver-descent__canvas { width: 100% !important; height: 100% !important; }
 
 .diver-descent__still {
@@ -319,4 +322,54 @@
 
 @media (max-width: 760px) and (prefers-reduced-motion: reduce) {
   .diver-descent__stage { height: auto; min-height: 100svh; grid-template-rows: auto auto 240px auto; }
+}
+
+/* A normal-flow field log for phones, tablets and reduced motion. No pinned
+   stage, WebGL, scroll measurements or continuous animation. */
+.descent-log {
+  position: relative;
+  isolation: isolate;
+  color-scheme: dark;
+  padding: 4.5rem max(1.25rem, calc((100% - 1120px) / 2));
+  overflow: hidden;
+  background-color: #071f38;
+  background-image:
+    radial-gradient(ellipse at 12% 30%, rgba(40, 133, 153, 0.08), transparent 50%),
+    linear-gradient(#071f38, #041526);
+  color: #e8f5fb;
+}
+.descent-log__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(216, 236, 250, 0.18);
+  color: var(--bioluminescence);
+  font: 0.65rem/1.7 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.descent-log__header > span:last-child { color: var(--foam-dim); text-align: right; }
+.descent-log__layout { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 2.5rem; align-items: center; }
+.descent-log__illustration { position: relative; min-width: 0; margin: 2rem 0; text-align: center; }
+.descent-log__illustration img { position: relative; display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
+.descent-log__orbit { position: absolute; inset: 10%; border: 1px solid rgba(63, 232, 211, 0.2); border-radius: 50%; }
+.descent-log__orbit::after { position: absolute; inset: 12%; border: 1px dashed rgba(216, 236, 250, 0.14); border-radius: 50%; content: ""; }
+.descent-log__illustration figcaption { color: var(--foam-dim); font: 0.55rem/1.8 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.descent-log__chapters { list-style: none; margin: 0; padding: 0 0 0 1.5rem; border-left: 1px solid rgba(63, 232, 211, 0.25); }
+.descent-log__chapters li { position: relative; padding: 2rem 0; }
+.descent-log__chapters li::before { content: ""; position: absolute; top: 2.5rem; left: calc(-1.5rem - 4px); width: 7px; height: 7px; border-radius: 50%; background: var(--bioluminescence); }
+.descent-log__label { margin: 0 0 0.8rem; font: 0.6rem/1.7 var(--font-mono); color: var(--bioluminescence); text-transform: uppercase; letter-spacing: 0.05em; }
+.descent-log__chapters h2 { margin: 0; font: 400 clamp(1.9rem, 3.8vw, 3rem)/1.1 var(--font-display); letter-spacing: -0.035em; }
+.descent-log__chapters em { color: #b4e7ef; font-weight: 400; }
+.descent-log__body { max-width: 42ch; margin: 1rem 0 0; font-size: 0.9rem; line-height: 1.8; color: rgba(216, 236, 250, 0.7); }
+.descent-log__link { display: inline-flex; align-items: center; justify-content: space-between; gap: 2rem; min-height: 48px; margin-top: 1.5rem; color: var(--bioluminescence); font: 0.7rem/1.5 var(--font-mono); text-decoration: none; }
+.descent-log__link:hover { text-decoration: underline; text-underline-offset: 6px; }
+@media (max-width: 640px) {
+  .descent-log { padding-top: 3.5rem; padding-bottom: 3rem; }
+  .descent-log__header { font-size: 0.55rem; }
+  .descent-log__header > span:last-child { max-width: 145px; }
+  .descent-log__layout { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+  .descent-log__illustration { width: min(100%, 300px); margin: 1.5rem auto 1rem; }
+  .descent-log__chapters h2 { font-size: clamp(1.9rem, 7.5vw, 2.6rem); }
 }

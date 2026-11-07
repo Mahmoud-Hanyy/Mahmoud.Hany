@@ -654,3 +654,11 @@
     width: 8px;
   }
 }
+
+/* The touch experience uses the existing ocean gradients without GPU effects. */
+.hero--lite .portrait__img { filter: none; }
+.hero--lite .hero__figure-wash { box-shadow: none; }
+.hero--lite .hero__scene {
+  background: linear-gradient(112deg, transparent 35%, rgba(159, 232, 255, 0.045) 36%, transparent 53%);
+}
+.hero--lite .hero__rotating-phrase { min-height: 0; }
