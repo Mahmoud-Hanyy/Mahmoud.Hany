@@ -47,7 +47,7 @@ export default function DiverDescent({ meters }) {
     if (lite || !node || typeof IntersectionObserver === "undefined") return;
     const observer = new IntersectionObserver(
       ([entry]) => setInView(entry.isIntersecting),
-      { rootMargin: "300px" }
+      { rootMargin: "0px" }
     );
     observer.observe(node);
     return () => observer.disconnect();

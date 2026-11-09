@@ -23,15 +23,20 @@ export default function CursorRipples() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     let ripples = [];
-    let lastSpawn = { x: null, y: null };
+    let lastSpawn = { x: null, y: null, at: 0 };
     let rafId;
+    let pixelRatio = 1;
+    const maxRipples = 8;
+    const minSpawnInterval = 40;
+    const minSpawnDistance = 38;
 
     const resize = () => {
-      canvas.width = window.innerWidth * window.devicePixelRatio;
-      canvas.height = window.innerHeight * window.devicePixelRatio;
-      canvas.style.width = `${window.innerWidth}px`;
-      canvas.style.height = `${window.innerHeight}px`;
-      ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
+      // A full-resolution viewport canvas can allocate and clear tens of
+      // millions of pixels on high-DPI displays for a subtle cursor effect.
+      pixelRatio = Math.min(window.devicePixelRatio || 1, 1.25);
+      canvas.width = Math.round(window.innerWidth * pixelRatio);
+      canvas.height = Math.round(window.innerHeight * pixelRatio);
+      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     };
     resize();
     window.addEventListener("resize", resize);
@@ -39,6 +44,7 @@ export default function CursorRipples() {
     let running = false;
 
     const spawnRipple = (x, y) => {
+      if (ripples.length >= maxRipples) ripples.shift();
       ripples.push({
         x,
         y,
@@ -46,7 +52,6 @@ export default function CursorRipples() {
         maxRadius: 34 + Math.random() * 20,
         alpha: 0.5,
       });
-      if (ripples.length > 40) ripples.shift(); // keep the trail bounded
       if (!running) {
         running = true;
         rafId = requestAnimationFrame(draw);
@@ -54,25 +59,22 @@ export default function CursorRipples() {
     };
 
     const onPointerMove = (e) => {
+      if (e.pointerType !== "mouse") return;
       const x = e.clientX;
       const y = e.clientY;
-      if (lastSpawn.x === null) {
-        spawnRipple(x, y);
-      } else {
-        const dx = x - lastSpawn.x;
-        const dy = y - lastSpawn.y;
-        if (dx * dx + dy * dy > 26 * 26) {
-          spawnRipple(x, y);
-        } else {
-          return;
-        }
+      const now = performance.now();
+      const dx = lastSpawn.x === null ? minSpawnDistance : x - lastSpawn.x;
+      const dy = lastSpawn.y === null ? 0 : y - lastSpawn.y;
+      if (now - lastSpawn.at < minSpawnInterval || dx * dx + dy * dy < minSpawnDistance ** 2) {
+        return;
       }
-      lastSpawn = { x, y };
+      spawnRipple(x, y);
+      lastSpawn = { x, y, at: now };
     };
     window.addEventListener("pointermove", onPointerMove, { passive: true });
 
     const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
       ripples = ripples.filter((r) => r.alpha > 0.01);
       for (const r of ripples) {

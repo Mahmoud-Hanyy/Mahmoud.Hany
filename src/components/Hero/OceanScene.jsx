@@ -80,7 +80,9 @@ function LightRays() {
 }
 
 export default function OceanScene() {
-  const [containerRef, inView] = useInView("300px");
+  // Avoid running the Hero and Descent WebGL loops at the same time when
+  // they meet near the fold. Start and stop each scene at its viewport edge.
+  const [containerRef, inView] = useInView("0px");
   const { unavailable, onCreated } = useWebGLFallback();
 
   if (unavailable) return null;
